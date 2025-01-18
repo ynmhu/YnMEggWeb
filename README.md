@@ -1,16 +1,16 @@
-      - ### [What is work already](https://ai.ynm.hu/egg/)   <------     
+- ### [What is work already](https://ai.ynm.hu/egg/)   <------     
 
 
-                           ##################################################################################
-                           ##	                    	Created by Markus Lajos                        ##
-                           ##	                     🔹 Contact: markus@ynm.hu                         ##
-                           ##		                  🔹 Website: https://ynm.hu                   ##
-                           ##	                    	🔹 All rights reserved.                        ##
-                           ##						                               ##
-                           ##This software is developed by Markus Lajos. Unauthorized use, modification,   ##
-                           ##or redistribution of this code is prohibited without prior written consent.   ##
-                           ##"For any injury or environmental emergency, call your local emergency number."##
-                           ################################################################################## 
+                                          ##################################################################################
+                                          ##	      	            Created by Markus Lajos                                 ##
+                                          ##	            	🔹 Contact: markus@ynm.hu                                   ##
+                                          ##	            	🔹 Website: https://ynm.hu                                  ##
+                                          ##	            	🔹 All rights reserved.                                     ##
+                                          ##	                                    				            ##
+                                          ##This software is developed by Markus Lajos. Unauthorized use, modification,   ##
+                                          ##or redistribution of this code is prohibited without prior written consent.   ##
+                                          ##"For any injury or environmental emergency, call your local emergency number."##
+                                          ##################################################################################
 
 
 # YnMEggWeb
