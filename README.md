@@ -1,6 +1,4 @@
-											 ### [What is work already](https://ai.ynm.hu/egg/)
-
-     
+- ### [What is work already](https://ai.ynm.hu/egg/)   <------     
 
 # YnMEggWeb
 # YnM Egg Web
