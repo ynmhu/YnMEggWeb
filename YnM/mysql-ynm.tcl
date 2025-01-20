@@ -36,10 +36,6 @@ proc YnM_Upload {} {
     if {[mysql_connected]} {
         mysql_close
     }
-    YnMMysql_Update
 }
 
-proc YnM_Web {nick uhost hand chan text} {
-    YnM_Upload
-}
 putlog "\00304\[YnM-Mysql\] \003 \002 Betöltve "
