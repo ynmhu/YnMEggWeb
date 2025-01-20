@@ -81,8 +81,12 @@ YnMMysql_Update }]
 
 source "$YnM_dirname/db-ynm.tcl"
 source "$YnM_dirname/mysql-ynm.tcl"
+source "$YnM_dirname/chan-ynm.tcl"
 source "$YnM_dirname/timers-ynm.tcl"
 
+foreach var $YnMGlobal {
+   # puts "Globális változó: $var"
+}
 
 
 putlog "\00304\[YnM-Core\] \003 \002 Betöltve "
