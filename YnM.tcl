@@ -74,7 +74,8 @@ set YnMOnTime_hours [expr {($YnMonTime % 86400) / 3600}]
 set YnMOnTime_minutes [expr {($YnMonTime % 3600) / 60}]
 set YnMOnTimeFormatted "${YnMOnTime_days}d ${YnMOnTime_hours}h ${YnMOnTime_minutes}m"
 
-set YnMGlobal [concat $YnMGlobal {YnM_Web YnM_Timers YnM_Upload YnMServerUptime YnMBotStart YnMOnTimeFormatted 
+set YnMGlobal [concat $YnMGlobal {nick server botnick realname username admin owner botnet-nick botnick
+YnM_Web YnM_Timers YnM_Upload YnMServerUptime YnMBotStart YnMOnTimeFormatted 
 YnMonTime YnMUptime YnMStartTime YnMCurrentTime YnMServerUptimeSeconds YnMDays YnMHours YnMMinutes
 YnMMysql_Update }]
 
@@ -82,6 +83,9 @@ YnMMysql_Update }]
 source "$YnM_dirname/db-ynm.tcl"
 source "$YnM_dirname/mysql-ynm.tcl"
 source "$YnM_dirname/timers-ynm.tcl"
+source "$YnM_dirname/uptime.ynm.tcl"
+source "$YnM_dirname/live.ynm.tcl"
+source "$YnM_dirname/test.ynm.tcl" 
 
 foreach var $YnMGlobal {
    # puts "Globális változó: $var"
