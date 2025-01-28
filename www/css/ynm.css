@@ -1,0 +1,206 @@
+body {
+margin-bottom: 15px;
+margin-top: 15px;  /* Ez biztosítja, hogy a body alsó része ne érjen a navigációhoz */
+}
+.footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background-color: #343a40; /* Sötétszürke háttér */
+  color: #ffffff; /* Fehér szöveg */
+  text-align: center;
+  font-size: 15px;
+  border-top: 1px solid #4b4b4b; /* Vékony vonal a tetején */
+}
+
+.footer a {
+  color: #00bcd4; /* Kék linkek */
+  text-decoration: none;
+}
+
+.footer a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+nav {
+  margin-bottom: 5px;
+}
+@media (max-width: 991px) {
+    .navbar-nav {
+      text-align: center;
+      width: 100%;
+    }
+    .navbar-nav .nav-item {
+      display: inline-block;
+   }
+}
+/* Kártyák szülő konténerének stílusa */
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between; /* Túl sok hely helyett egyenletes távolságot ad */
+  width: 100%;  /* biztosítja, hogy a kártyák a teljes szélességet használják */
+}
+
+/* Alapértelmezett kártya stílus: 3 kártya egy sorban */
+.card {
+  width: calc(33.33% - 10px); /* 3 kártya egy sorban */
+  min-width: 300px;  /* Minimum szélesség a kártyákhoz */
+  height: auto;
+  background-color: #f1f1f1;
+  border: 1px solid #ddd;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box; /* Figyelembe veszi a padding-ot a szélesség meghatározásakor */
+}
+
+/* Két kártya egy sorban: 1200px-nél kisebb képernyőkre */
+@media (max-width: 1200px) {
+  .card {
+    width: calc(33% - 10px);  /* 2 kártya egy sorban */
+    min-width: 240px; /* A két kártya esetén is biztosítunk egy minimum szélességet */
+  }
+}
+@media (max-width: 800px) {
+  .card {
+    width: calc(50% - 10px);  /* 2 kártya egy sorban */
+    min-width: 240px; /* A két kártya esetén is biztosítunk egy minimum szélességet */
+  }
+}
+@media (max-width: 700px) {
+  .card {
+    width: calc(50% - 10px);  /* 2 kártya egy sorban */
+    min-width: 240px; /* A két kártya esetén is biztosítunk egy minimum szélességet */
+  }
+}
+
+/* Egy kártya egy sorban: 425px-nél kisebb képernyőkre */
+@media (max-width: 500px) {
+  .card {
+    width: calc(100% - 10px);  /* 1 kártya egy sorban */
+  }
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-label {
+  font-weight: bold;
+}
+
+.card-value {
+  text-align: right;
+}
+
+
+
+/* Státusz indikátor (pötty) alapbeállítása */
+.status-indicator {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 10px;
+  background-color: gray; /* Alapértelmezett szürke */
+  animation: none;
+}
+
+/* Pislogó animáció */
+@keyframes blink {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.status-indicator[style*="background-color: red"] {
+  animation: blink-red 1.5s infinite;
+}
+
+.status-indicator[style*="background-color: green"] {
+  animation: blink-green 1.5s infinite;
+}
+
+@keyframes blink-red {
+  0% {
+    opacity: 1;
+    background-color: red;
+  }
+  50% {
+    opacity: 0;
+    background-color: transparent;
+  }
+  100% {
+    opacity: 1;
+    background-color: red;
+  }
+}
+
+@keyframes blink-green {
+  0% {
+    opacity: 1;
+    background-color: green;
+  }
+  50% {
+    opacity: 0;
+    background-color: transparent;
+  }
+  100% {
+    opacity: 1;
+    background-color: green;
+  }
+}
+
+
+.card-row {
+  display: flex;
+  justify-content: space-between; /* Egyenletes elrendezés */
+  align-items: center; /* Középre igazítás */
+}
+
+.card-value {
+  display: flex;  /* A gombok egy sorban legyenek */
+  gap: 10px; /* Közötti távolság */
+}
+
+
+.YnM-Stats {
+    text-align: center;
+}
+.modal-backdrop {
+  z-index: 1040 !important; /* Ez biztosítja, hogy a modal háttér a navbar fölött jelenjen meg */
+}
+.modal {
+  z-index: 1050 !important; /* Ez a modal-t biztosítja, hogy a navbar fölött legyen */
+}
+.inactive {
+  color: white;             /* Szürkére állítja a szöveget */
+  pointer-events: none;    /* Leállítja a kattintásokat */
+   /* Eltávolítja az aláhúzást */
+}
+ .egg-text {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}

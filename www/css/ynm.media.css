@@ -1,0 +1,42 @@
+h2 {
+  text-align: center;
+  margin-top: 60px;
+}
+.table-container {
+  margin: 0; /* Nincs margó */
+  padding: 0; /* Nincs padding */
+}
+.status-completed {
+  color: green;
+}
+.status-pending {
+  color: red;
+}
+.row-completed {
+  background-color: #d4edda; /* Zöld háttér */
+}
+.row-pending {
+  background-color: #f8d7da; /* Piros háttér */
+}
+body {
+margin: 0; /* Nincs margó az oldalon */
+background-color: #343a40; /* Sötét szürke háttér */
+color: white; /* Fehér szöveg a jobb láthatóság érdekében */
+}
+/* Keretezés a táblázathoz */
+table {
+  border-collapse: collapse; /* Összeolvasztja a cellák határait */
+  width: 100%; /* Teljes szélesség */
+}
+th, td {
+  border: 1px solid #000; /* Fekete keret a cellákhoz */
+  padding: 10px; /* Cellák belső margója */
+	font-weight: bold;
+  text-align: center; /* Balra igazítás a cellákban */
+}
+th {
+  background-color: #343a40; /* Sötét szürke háttér a fejlécnek */
+  color: #D8DBDF; /* Kék szöveg */
+  font-weight: bold; /* Vastag szöveg */
+  text-align: center; /* Középre igazítás a fejlécben */
+}
