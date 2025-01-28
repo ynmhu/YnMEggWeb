@@ -1,16 +1,16 @@
-- ### [What is work already](https://ai.ynm.hu/egg/)   <------     
+- ### [What is work already](https://ai.ynm.hu/)   <------     
 
 
-                                          ##################################################################################
-                                          ##	      	            Created by Markus Lajos                                 ##
-                                          ##	            	🔹 Contact: markus@ynm.hu                                   ##
-                                          ##	            	🔹 Website: https://ynm.hu                                  ##
-                                          ##	            	🔹 All rights reserved.                                     ##
-                                          ##	                                    				            ##
-                                          ##This software is developed by Markus Lajos. Unauthorized use, modification,   ##
-                                          ##or redistribution of this code is prohibited without prior written consent.   ##
-                                          ##"For any injury or environmental emergency, call your local emergency number."##
-                                          ##################################################################################
+################################################################################
+##	      	            Created by Markus Lajos                                 
+##	            	🔹 Contact: markus@ynm.hu                                   
+##	            	🔹 Website: https://ynm.hu                                  
+##	            	🔹 All rights reserved.                                     
+##	                                    				            
+##This software is developed by Markus Lajos. Unauthorized use, modification,   
+##or redistribution of this code is prohibited without prior written consent.   
+##"For any injury or environmental emergency, call your local emergency number."
+################################################################################
 
 
 # YnMEggWeb
@@ -28,14 +28,10 @@
 
 ## Requirements
 - **Eggdrop**: Version 1.9+ is recommended.
-- **Web Server**: Apache, Nginx, or any server supporting PHP or Python.
-#- **Database**: SQLite, MySQL, or PostgreSQL for storing user settings (optional).
-#- **Python 3.8+** (for backend).
-#- **Node.js** (optional, for building frontend assets).
+- **Web Server**: Apache, server supporting PHP.
+#- **Database**: MySQL for storing user settings (optional).
+
 
 ## Installation
-1. Clone the repository:
-   ```bash
-   git clone [https://github.com/yourusername/ynm-egg-web.git](https://github.com/ynmhu/YnMEggWeb.git)
-   cd ynm-egg-web
+
 
