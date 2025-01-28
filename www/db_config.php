@@ -33,8 +33,8 @@ $mail = [
 
 // reCAPTCHA beállítások
 $recaptcha = [
-    'enabled' => 1,                        // 0 = kikapcsolva, 1 = bekapcsolva
-    'public' => "6LeHgcAqAAAAABwyc28CLxRnwWlSoAwCYavi8O9-",                        // Google reCAPTCHA nyilvános kulcs
-    'secret' => "6LeHgcAqAAAAAOBtlW1R3zMRr2zN6YvUWQM-KiWJ"                         // Google reCAPTCHA titkos kulcs
+    'enabled' => 0,                        // 0 = kikapcsolva, 1 = bekapcsolva
+    'public' => "",                        // Google reCAPTCHA nyilvános kulcs
+    'secret' => ""                         // Google reCAPTCHA titkos kulcs
 ];
 ?>
