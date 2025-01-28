@@ -11,24 +11,25 @@
 #&# On change here Need! RESTART###
 set mysql_ho "localhost"
 set mysql_us "ai"
-set mysql_pa "Ai1"
-set mysql_db "ynm"
+set mysql_pa ".."
+set mysql_db "ynmegg"
 #set mysql_conn [mysql_connect $mysql_db $mysql_ho $mysql_us $mysql_pa]
 #&################################################################################
-
+#bind pub - !ynm YnM_Web
 set YnMNick "YnM-Egg-Web"
 set YnMVersion "Eggdrop+Web"
 set YnMAuthor "Markus"
 set YnMServer "YnM-IrC"
 #&################################################################################
-set YnMMysqlUpdate 3
-set YnMWebDcc 0
-
+set YnMMysqlUpdate 60
+set ynmegg(api) "https://ai.ynm.hu/api.php" ; #Api Server
+set ynmegg(key) "......" ;      #Api  Key
+set ynmegg_start_file "YnM/.tmp/ynmegg_start.txt"
 
 #&################################################################################
+#set ynmcom "ynmcon"
 
 
-
-set YnMGlobal [concat $YnMGlobal {mysql_ho mysql_us mysql_pa mysql_db mysql_conn
- YnMNick YnMVersion YnMAuthor YnMServer YnMMysqlUpdate YnMWebDcc}]
+set YnMGlobal [concat $YnMGlobal {mysql_ho mysql_us mysql_pa mysql_db mysql_conn 
+ynmcom YnMNick YnMVersion YnMAuthor YnMServer YnMMysqlUpdate YnMWebDcc}]
 putlog "\00304\[YnM-DataBase\]\003 \002 Betöltve "
