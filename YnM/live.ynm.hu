@@ -1,97 +1,365 @@
+#&################################################################################
+#&##		Created by Markus Lajos                                       
+#&##		🔹 Contact: markus@ynm.hu                                     
+#&##		🔹 Website: https://ynm.hu			            
+#&##		🔹 All rights reserved.                                       
+#&##							            
+#&##  This software is developed by Markus Lajos. Unauthorized use, modification, 
+#&##  or redistribution of this code is prohibited without prior written consent. 
+#&##"For any injury or environmental emergency, call your local emergency number."
+#&################################################################################ 
+
 package require http
 package require tls
-package require json
-set eggpanel(api) "https://ai.ynm.hu/api.php" ;
-set eggpanel(key) "" ;
+package require json 
 
-
-proc eggpanel:loop {args} {
-  global eggpanel
-            ::http::register https 443 [list ::tls::socket \
-                -ssl2 0 \
-                -ssl3 0 \
-                -tls1 0 \
-                -tls1.1 0 \
-                -tls1.2 1 \
-                -tls1.3 1 \
-                -servername [lindex [split $eggpanel(api) "/"] 2]]
-  set token [::http::geturl $eggpanel(api) -query [::http::formatQuery key $eggpanel(key) command fetch]]
+proc ynmegg:loop {args} {
+  global ynmegg
+  ::http::register https 443 [list ::tls::socket \
+        -ssl2 0 \
+        -ssl3 0 \
+        -tls1 0 \
+        -tls1.1 0 \
+        -tls1.2 1 \
+        -tls1.3 1 \
+        -servername [lindex [split $ynmegg(api) "/"] 2]]
+  set token [::http::geturl $ynmegg(api) -query [::http::formatQuery key $ynmegg(key) command fetch]]
   set data [::http::data $token]
   ::http::cleanup $token
   set json [::json::json2dict $data]
-  # debug purposes only
-  #putlog $json
-  #
-  #
   if {[dict exists $json code]} {
     switch -nocase -- [dict get $json code] {
-      200 {}
-      default {}
+	200 {putlog "200 [dict get $json message]"}
+	300 {putlog "300 [dict get $json message]"}
+	305 {putlog "305 [dict get $json message]"}
+	350 {putlog "350 [dict get $json message]"}
+	400 {putlog "400 [dict get $json message]"}	
+	405 {putlog "405 [dict get $json message]"}
+	410 {putlog "410 [dict get $json message]"}
+	
+      default {putlog "API Error: [dict get $json message]"}
     }
   }
   if {[dict exists $json message]} {
     foreach msg [dict get $json message] {
       dict with msg {
         switch -nocase -- $command {
-          rehash {eggpanel:rehash $id}
-          restart {eggpanel:restart $id}
-          die {eggpanel:die $id}
+          rehash {ynmegg:rehash $id}
+          restart {ynmegg:restart $id}
+          die {ynmegg:die $id}
+          join {ynmegg:join $id $arguments}
+	part {ynmegg:part $id $arguments}
           default {}
         }
       }
     }
   }
-  after 5000 eggpanel:loop    ;# schedule the proc to be executed again after 5 seconds
+  after 60000 ynmegg:loop    ;# schedule the proc to be executed again after 5 seconds
 }
-proc eggpanel:userlist {args} {
-  global eggpanel
-  set users ""
-  set bots ""
-  set userinfo ""
-  set botinfo ""
-  foreach user [userlist] {
-    if {$user in [botlist]} {
-      lappend bots $user
-    } else {
-      lappend users $user
-    }
-    foreach u $users {
-      lappend userinfo [dict create name $u flags [chattr $u] hosts [getuser $u HOSTS]]
-    }
-    foreach b $bots {
-      lappend botinfo [dict create name $b flags [chattr $b] botflags [getuser $u BOTFL] botaddr [getuser $u BOTADDR]]
-    }
-    set final [dict create users $userinfo bots $botinfo]
-    set json [compile_json {dict * {list dict}} $final]
-    # send to api server
-    after 10000 eggpanel:userlist
-  }
-}
-proc eggpanel:chanlist {args} {
 
+proc ynmegg:update_channels {args} {
+    global ynmegg
+    
+    # Get all channels that the bot is currently on
+    set channelList [channels]
+    
+    # Skip if no channels
+    if {[llength $channelList] == 0} {
+        putlog "No channels to update"
+        return
+    }
+    
+    # Convert channel list to comma-separated string
+    set channelString [join $channelList ","]
+    putlog "Updating channels: $channelString"
+    
+    # Set up HTTPS for API call
+    ::http::register https 443 [list ::tls::socket \
+        -ssl2 0 \
+        -ssl3 0 \
+        -tls1 0 \
+        -tls1.1 0 \
+        -tls1.2 1 \
+        -tls1.3 1 \
+        -servername [lindex [split $ynmegg(api) "/"] 2]]
+    
+    # Send update to API
+    if {[catch {
+        set token [::http::geturl $ynmegg(api) -query [::http::formatQuery \
+            key $ynmegg(key) \
+            command updatechannels \
+            channels $channelString]]
+        
+        set data [::http::data $token]
+        ::http::cleanup $token
+        
+        set response [::json::json2dict $data]
+        
+        if {[dict exists $response code]} {
+            switch -- [dict get $response code] {
+                200 {
+                    putlog "Successfully updated channels in database"
+                }
+                404 {
+                    putlog "Error: Bot ID not found in database"
+                }
+                410 {
+                    putlog "Error: Failed to update channels in database"
+                }
+                default {
+                    putlog "Unknown response code: [dict get $response code]"
+                }
+            }
+        }
+    } err]} {
+        putlog "Error updating channels: $err"
+    }
+    
+    # Schedule next update
+    after 60000 ynmegg:update_channels
 }
-proc eggpanel:pickup {id success {msg {}}} {
-  global eggpanel
-  ::http::register https 443 [list ::tls::socket -tls1 1]
-  set token [::http::geturl $eggpanel(api) -query [::http::formatQuery key $eggpanel(key) command pickup action $id success $success message $msg]]
+  
+proc ynmegg:check_real_restart {} {
+    global pidfile
+    
+    # Read Eggdrop's PID file
+    if {[file exists $pidfile]} {
+        set f [open $pidfile "r"]
+        set eggdrop_pid [string trim [gets $f]]
+        close $f
+        
+        # Compare with current process ID
+        if {$eggdrop_pid == [pid]} {
+            return 0    ;# Same process - it's a rehash
+        }
+    }
+    return 1    ;# Different process or no PID file - it's a restart
+}
+
+proc ynmegg:get_start_time {} {
+    global ynmegg_start_file
+    
+    # Check if this is a real restart
+    if {[ynmegg:check_real_restart]} {
+        set start_time [clock seconds]
+        set f [open $ynmegg_start_file "w"]
+        puts $f $start_time
+        close $f
+        putlog "Bot restarted - New start time recorded"
+        return $start_time
+    }
+    
+    if {[file exists $ynmegg_start_file]} {
+        # Read existing timestamp
+        set f [open $ynmegg_start_file "r"]
+        set start_time [gets $f]
+        close $f
+        
+        # Validate the timestamp
+        if {![string is integer -strict $start_time]} {
+            set start_time [clock seconds]
+            set f [open $ynmegg_start_file "w"]
+            puts $f $start_time
+            close $f
+        }
+        return $start_time
+    } else {
+        # If file doesn't exist, create it with current time
+        set start_time [clock seconds]
+        set f [open $ynmegg_start_file "w"]
+        puts $f $start_time
+        close $f
+        putlog "First start - Initial start time recorded"
+        return $start_time
+    }
+}
+
+
+proc ynmegg:get_server_uptime {} {
+    # Get uptime using system command
+    set uptime [exec uptime]
+    
+    # Extract time parts using regexp
+    regexp {up\s+(?:(\d+)\s+days?,?\s+)?(?:(\d+):)?(\d+)(?:\s*mins?)?} $uptime -> days hours mins
+    
+    # Initialize total seconds
+    set total_seconds 0
+    
+    # Add up all time components
+    if {$days ne ""} {
+        incr total_seconds [expr {$days * 86400}]
+    }
+    if {$hours ne ""} {
+        incr total_seconds [expr {$hours * 3600}]
+    }
+    if {$mins ne ""} {
+        incr total_seconds [expr {$mins * 60}]
+    }
+    
+    # Format into readable uptime
+    set days [expr {$total_seconds / 86400}]
+    set hours [expr {($total_seconds % 86400) / 3600}]
+    set minutes [expr {($total_seconds % 3600) / 60}]
+    set seconds [expr {$total_seconds % 60}]
+    
+    return "${days}d ${hours}h ${minutes}m ${seconds}s"
+}
+
+
+proc ynmegg:update_server_uptime {args} {
+    global ynmegg
+    
+    # Get server uptime
+    set server_uptime [ynmegg:get_server_uptime]
+    
+    # Set up HTTPS for API call
+    ::http::register https 443 [list ::tls::socket \
+        -ssl2 0 \
+        -ssl3 0 \
+        -tls1 0 \
+        -tls1.1 0 \
+        -tls1.2 1 \
+        -tls1.3 1 \
+        -servername [lindex [split $ynmegg(api) "/"] 2]]
+    
+    # Send server uptime to API
+    if {[catch {
+        set token [::http::geturl $ynmegg(api) -query [::http::formatQuery \
+            key $ynmegg(key) \
+            command uptime \
+            server_uptime $server_uptime]]
+            
+        ::http::cleanup $token
+    } err]} {
+        putlog "Error updating server uptime: $err"
+    }
+    
+    # Schedule next update in 1 hour
+    after 60000 ynmegg:update_server_uptime
+}
+
+proc ynmegg:update_uptime {args} {
+    global ynmegg
+    
+    # Get the persistent start time
+    set start_time [ynmegg:get_start_time]
+    set current_time [clock seconds]
+    set uptime [expr {$current_time - $start_time}]
+    
+    # Calculate time components
+    set days [expr {$uptime / 86400}]
+    set hours [expr {($uptime % 86400) / 3600}]
+    set minutes [expr {($uptime % 3600) / 60}]
+    set seconds [expr {$uptime % 60}]
+    set readable_uptime "${days}d ${hours}h ${minutes}m ${seconds}s"
+    
+    # Set up HTTPS for API call
+    ::http::register https 443 [list ::tls::socket \
+        -ssl2 0 \
+        -ssl3 0 \
+        -tls1 0 \
+        -tls1.1 0 \
+        -tls1.2 1 \
+        -tls1.3 1 \
+        -servername [lindex [split $ynmegg(api) "/"] 2]]
+    
+    # Send uptime to API
+    if {[catch {
+        set token [::http::geturl $ynmegg(api) -query [::http::formatQuery \
+            key $ynmegg(key) \
+            command ontime \
+            on_time $readable_uptime]]
+            
+        ::http::cleanup $token
+    } err]} {
+        putlog "Error updating uptime: $err"
+    }
+    
+    # Schedule next update in 1 hour
+    after 60000 ynmegg:update_uptime
+}
+
+
+proc ynmegg:pickup {id success {msg {}}} {
+  global ynmegg
+  ::http::register https 443 [list ::tls::socket \
+        -ssl2 0 \
+        -ssl3 0 \
+        -tls1 0 \
+        -tls1.1 0 \
+        -tls1.2 1 \
+        -tls1.3 1 \
+        -servername [lindex [split $ynmegg(api) "/"] 2]]
+  set token [::http::geturl $ynmegg(api) -query [::http::formatQuery key $ynmegg(key) command pickup action $id success $success message $msg]]
   ::http::cleanup $token
 }
-proc eggpanel:rehash {id} {
-  after 1000 rehash
-  eggpanel:pickup $id 1 "Rehashing..."
-}
-proc eggpanel:restart {id} {
-  after 1000 restart
-  eggpanel:pickup $id 1 "Restarting..."
-}
-proc eggpanel:die {id} {
-  after 1000 die
-  eggpanel:pickup $id 1 "Going offline..."
-}
-if {![info exists eggpanel(start)]} {
-  eggpanel:loop
-  eggpanel:userlist
-  eggpanel:chanlist
-  set eggpanel(start) 1
+
+
+
+proc ynmegg:join {id {channel {}}} {
+    global ynmegg
+    
+    if {$channel eq ""} {
+        if {[info exists ynmegg(last_message)]} {
+            set channel $ynmegg(last_message)
+        } else {
+            ynmegg:pickup $id 0 "No channel specified"
+            return
+        }
+    }
+    
+    if {[string match "#*" $channel]} {
+        # Add channel to bot
+        channel add $channel
+        after 300000 ynmegg:update_channels
+        ynmegg:pickup $id 1 "Add $channel"
+    } else {
+        ynmegg:pickup $id 0 "Invalid channel name: $channel"
+    }
 }
 
+proc ynmegg:part {id {channel {}}} {
+    global ynmegg
+    
+    if {$channel eq ""} {
+        if {[info exists ynmegg(last_message)]} {
+            set channel $ynmegg(last_message)
+        } else {
+            ynmegg:pickup $id 0 "No channel specified"
+            return
+        }
+    }
+    
+    if {[string match "#*" $channel]} {
+        channel remove $channel
+      after 300000 ynmegg:update_channels
+     ynmegg:pickup $id 1 "Del $channel"
+    } else {
+        ynmegg:pickup $id 0 "Invalid channel name: $channel"
+    }
+}
+
+proc ynmegg:rehash {id} {
+  after 1000 rehash
+  ynmegg:pickup $id 1 "Rehash"
+}
+proc ynmegg:restart {id} {
+  after 1000 restart
+  ynmegg:pickup $id 1 "Restart"
+}
+proc ynmegg:die {id} {
+  after 1000 die
+  ynmegg:pickup $id 1 "Offline"
+}
+
+if {![info exists ynmegg(start)]} {
+  putlog "Starting YnM-Web with automatic activation..."
+  ynmegg:loop
+  ynmegg:update_channels
+  ynmegg:get_start_time
+  ynmegg:update_uptime
+  ynmegg:update_server_uptime
+  
+  
+  set ynmegg(start) 1
+}
